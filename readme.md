@@ -21,7 +21,7 @@ In this mode, the tracking code integrates with your existing code. This is mode
       // we've seen more than 5 requests per second
     }
 ```
-If you want to track different events independently, create multiple trackers. A tracker is composed of an `int32` and an `int64` and used the `sync/atomic` package for concurrency control
+If you want to track different events independently, create multiple trackers. A tracker is composed of an `int32` and an `int64` and uses the `sync/atomic` package for concurrency control
 
 ## Standalone Mode
 
@@ -50,7 +50,7 @@ When configuring the limiter:
 * `MaxItems(int)` - maximum number of values to track (default: 5000)
 * `TTL(int)` - length of time to wait before purging an idle value (default: 10 minutes)
 
-It takes roughly 2.3MB to track 10 000 items.
+It takes roughly 2.3MB to track 10 000 items. The limiter is thread-safe.
 
 ## Return Value
 
