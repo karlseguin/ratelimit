@@ -5,9 +5,9 @@ import (
 )
 
 type Configuration struct {
-	maxItems int
-	allowance  int
-	ttl      time.Duration
+	maxItems  int
+	allowance int
+	ttl       time.Duration
 }
 
 func Configure() *Configuration {

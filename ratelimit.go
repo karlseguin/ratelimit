@@ -19,7 +19,7 @@ func New(config *Configuration) *RateLimit {
 	}
 }
 
-func (r *RateLimit) Track(key string) int {
+func (r *RateLimit) Track(key string) int32 {
 	tracker, _ := r.Fetch(key, r.ttl, func() (interface{}, error) { return NewTracker(), nil })
 	return tracker.(*Tracker).Track(r.allowance)
 }

@@ -5,11 +5,6 @@ import (
 	"time"
 )
 
-const (
-	OK int = iota
-	FLOOD
-)
-
 type Tracker struct {
 	Allowance int32
 	LastRead  int64
@@ -19,7 +14,7 @@ func NewTracker() *Tracker {
 	return new(Tracker)
 }
 
-func (t *Tracker) Track(allowedPerSecond int32) int {
+func (t *Tracker) Track(allowedPerSecond int32) int32 {
 	now := time.Now().Unix()
 	earned := int32(now - atomic.SwapInt64(&t.LastRead, now))
 	if earned > allowedPerSecond {
@@ -29,10 +24,6 @@ func (t *Tracker) Track(allowedPerSecond int32) int {
 	if allowance > allowedPerSecond {
 		allowance = allowedPerSecond
 		atomic.StoreInt32(&t.Allowance, allowedPerSecond)
-		return OK
 	}
-	if allowance < 0 {
-		return FLOOD
-	}
-	return OK
+	return allowance
 }

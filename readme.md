@@ -17,7 +17,7 @@ In this mode, the tracking code integrates with your existing code. This is mode
 
 
     // whenever an action is taken that you want to limit:
-    if user.tracker.Track(5) == tracker.FLOOD {
+    if user.tracker.Track(5) < 0 {
       // we've seen more than 5 requests per second
     }
 ```
@@ -39,7 +39,7 @@ limiter := ratelimit.New(ratelimit.Configure().
 and use it to track requests:
 
 ```go
-if limiter.Track("SOME_KEY") == ratelimit.FLOOD {
+if limiter.Track("SOME_KEY") < 0 {
 
 }
 ```
