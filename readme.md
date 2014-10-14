@@ -40,7 +40,7 @@ and use it to track requests:
 
 ```go
 if limiter.Track("SOME_KEY") == ratelimit.FLOOD {
-  // we
+
 }
 ```
 
