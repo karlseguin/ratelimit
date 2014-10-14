@@ -51,3 +51,15 @@ When configuring the limiter:
 * `TTL(int)` - length of time to wait before purging an idle value (default: 10 minutes)
 
 It takes roughly 2.3MB to track 10 000 items.
+
+## Return Value
+
+The return value is the number of allowed actions remaining. A value less than 0 means we're over the allocation. This can be used to take different actions based on how much over we are:
+
+```go
+  if allowed := tracker.Track(5); allowed < -5 {
+    //way over, disconnect!
+  } else if allowed < 0 {
+    //a little over, warn
+  }
+```
