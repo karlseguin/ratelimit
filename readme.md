@@ -6,7 +6,7 @@ The library functions in two mode.
 
 ## Embedded Mode
 
-In this mode, the tracking code integrates with your existing code. This is mode is ideal if you already maintain long-lived objects. For example, if you were building a TCP chat server, you'd use the embedded mode and associate `*Tracker` with your existing `*User` (for example).
+In this mode, the tracking code integrates with your existing code. This mode is ideal if you already maintain long-lived objects. For example, if you were building a TCP chat server, you'd use the embedded mode and associate a `*Tracker` with your existing `*User`.
 
 ```go
     // your code embeds a *ratelimit.Tracker
