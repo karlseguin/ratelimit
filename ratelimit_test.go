@@ -1,33 +1,35 @@
 package ratelimit
 
 import (
-	"github.com/karlseguin/gspec"
+	. "github.com/karlseguin/expect"
 	"testing"
 	"time"
 )
 
-func Test_RateLimit_OkForNewItem(t *testing.T) {
-	spec := gspec.New(t)
-	limiter := New(Configure().Allowance(3))
-	spec.Expect(limiter.Track("test") >= 0).ToEqual(true)
+type RateLimitTests struct{}
+func Test_RateLimit(t *testing.T) {
+	Expectify(new(RateLimitTests), t)
 }
 
-func Test_RateLimit_OkForExistingItemOverAllowance(t *testing.T) {
-	spec := gspec.New(t)
+func (e *RateLimitTests) OkForNewItem() {
 	limiter := New(Configure().Allowance(3))
-	spec.Expect(limiter.Track("test") >= 0).ToEqual(true)
-	spec.Expect(limiter.Track("test") >= 0).ToEqual(true)
-	spec.Expect(limiter.Track("test") >= 0).ToEqual(true)
+	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
 }
 
-func Test_RateLimit_FloodWhenPastThreshold(t *testing.T) {
-	spec := gspec.New(t)
+func (e *RateLimitTests) OkForExistingItemOverAllowance() {
+	limiter := New(Configure().Allowance(3))
+	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
+	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
+	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
+}
+
+func (e *RateLimitTests) FloodWhenPastThreshold() {
 	limiter := New(Configure().
 		Allowance(2).
 		TTL(time.Minute))
-	spec.Expect(limiter.Track("test") >= 0).ToEqual(true)
-	spec.Expect(limiter.Track("test") >= 0).ToEqual(true)
-	spec.Expect(limiter.Track("test") >= 0).ToEqual(false)
-	spec.Expect(limiter.Track("other") >= 0).ToEqual(true)
-	spec.Expect(limiter.Track("other") >= 0).ToEqual(true)
+	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
+	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
+	Expect(limiter.Track("test")).Less.Than(int32(0))
+	Expect(limiter.Track("other")).GreaterOrEqual.To(int32(0))
+	Expect(limiter.Track("other")).GreaterOrEqual.To(int32(0))
 }

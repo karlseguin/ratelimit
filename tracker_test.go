@@ -1,39 +1,40 @@
 package ratelimit
 
 import (
-	"github.com/karlseguin/gspec"
+	. "github.com/karlseguin/expect"
 	"testing"
 	"time"
 )
 
-func Test_Tracker_OkWhenOverAllowance(t *testing.T) {
-	spec := gspec.New(t)
+type TrackerTests struct{}
+func Test_Tracker(t *testing.T) {
+	Expectify(new(TrackerTests), t)
+}
+
+func (e *TrackerTests) OkWhenOverAllowance() {
 	tracker := &Tracker{}
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(true)
+	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
 }
 
-func Test_Tracker_OkWhenOverThreshold(t *testing.T) {
-	spec := gspec.New(t)
+func (e *TrackerTests) OkWhenOverThreshold() {
 	tracker := &Tracker{Allowance: 2, LastRead: time.Now().Unix()}
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(true)
+	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
 }
 
-func Test_Tracker_FloodWhenBelowTreshold(t *testing.T) {
-	spec := gspec.New(t)
+func (e *TrackerTests) FloodWhenBelowTreshold() {
 	tracker := &Tracker{Allowance: 2, LastRead: time.Now().Unix()}
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(true)
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(true)
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(false)
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(false)
+	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
+	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
+	Expect(tracker.Track(5)).Less.Than(int32(0))
+	Expect(tracker.Track(5)).Less.Than(int32(0))
 }
 
-func Test_Tracker_OkAfterARestPeriod(t *testing.T) {
-	spec := gspec.New(t)
+func (e *TrackerTests) OkAfterARestPeriod() {
 	tracker := &Tracker{Allowance: 1, LastRead: time.Now().Unix()}
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(true)
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(false)
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(false)
+	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
+	Expect(tracker.Track(5)).Less.Than(int32(0))
+	Expect(tracker.Track(5)).Less.Than(int32(0))
 	time.Sleep(time.Second * 3)
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(true)
-	spec.Expect(tracker.Track(5) >= 0).ToEqual(false)
+	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
+	Expect(tracker.Track(5)).Less.Than(int32(0))
 }
