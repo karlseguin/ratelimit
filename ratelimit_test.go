@@ -7,6 +7,7 @@ import (
 )
 
 type RateLimitTests struct{}
+
 func Test_RateLimit(t *testing.T) {
 	Expectify(new(RateLimitTests), t)
 }

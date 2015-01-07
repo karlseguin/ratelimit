@@ -7,6 +7,7 @@ import (
 )
 
 type TrackerTests struct{}
+
 func Test_Tracker(t *testing.T) {
 	Expectify(new(TrackerTests), t)
 }
