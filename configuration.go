@@ -5,7 +5,7 @@ import (
 )
 
 type Configuration struct {
-	maxItems  int
+	maxItems  int64
 	allowance int
 	ttl       time.Duration
 }
@@ -21,7 +21,7 @@ func Configure() *Configuration {
 // The max number of items to track
 // [5000]
 func (c *Configuration) MaxItems(max int) *Configuration {
-	c.maxItems = max
+	c.maxItems = int64(max)
 	return c
 }
 

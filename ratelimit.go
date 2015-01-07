@@ -13,13 +13,15 @@ type RateLimit struct {
 
 func New(config *Configuration) *RateLimit {
 	return &RateLimit{
-		Cache:     ccache.New(ccache.Configure().MaxItems(config.maxItems).GetsPerPromote(1)),
+		Cache:     ccache.New(ccache.Configure().MaxSize(config.maxItems).GetsPerPromote(1)),
 		allowance: int32(config.allowance),
 		ttl:       config.ttl,
 	}
 }
 
 func (r *RateLimit) Track(key string) int32 {
-	tracker, _ := r.Fetch(key, r.ttl, func() (interface{}, error) { return NewTracker(), nil })
-	return tracker.(*Tracker).Track(r.allowance)
+	tracker, _ := r.Fetch(key, r.ttl, func() (interface{}, error) {
+		return NewTracker(), nil
+	})
+	return tracker.Value().(*Tracker).Track(r.allowance)
 }
