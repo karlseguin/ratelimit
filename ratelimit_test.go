@@ -11,19 +11,19 @@ func Test_RateLimit(t *testing.T) {
 	Expectify(new(RateLimitTests), t)
 }
 
-func (e *RateLimitTests) OkForNewItem() {
+func (_ RateLimitTests) OkForNewItem() {
 	limiter := New(Configure().Allowance(3))
 	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
 }
 
-func (e *RateLimitTests) OkForExistingItemOverAllowance() {
+func (_ RateLimitTests) OkForExistingItemOverAllowance() {
 	limiter := New(Configure().Allowance(3))
 	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
 	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
 	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
 }
 
-func (e *RateLimitTests) FloodWhenPastThreshold() {
+func (_ RateLimitTests) FloodWhenPastThreshold() {
 	limiter := New(Configure().Allowance(2))
 	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
 	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
