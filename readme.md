@@ -32,8 +32,7 @@ Configure a new rate limiter instance:
 ```go
 limiter := ratelimit.New(ratelimit.Configure().
               MaxAllowance(5).
-              MaxItems(5000).
-              TTL(time.Minute * 10))
+              MaxItems(5000)
 ```
 
 and use it to track requests:
@@ -48,9 +47,8 @@ When configuring the limiter:
 
 * `MaxAllowance(int)` - maximum number of requests per second allowed (default: 5)
 * `MaxItems(int)` - maximum number of values to track (default: 5000)
-* `TTL(int)` - length of time to wait before purging an idle value (default: 10 minutes)
 
-It takes roughly 2.3MB to track 10 000 items. The limiter is thread-safe.
+It takes roughly 1.7MB to track 10 000 items. The limiter is thread-safe.
 
 ## Return Value
 

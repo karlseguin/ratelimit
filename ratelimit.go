@@ -1,27 +1,23 @@
 package ratelimit
 
 import (
-	"github.com/karlseguin/ccache"
 	"time"
 )
 
 type RateLimit struct {
-	*ccache.Cache
+	*Cache
 	allowance int32
 	ttl       time.Duration
 }
 
 func New(config *Configuration) *RateLimit {
 	return &RateLimit{
-		Cache:     ccache.New(ccache.Configure().MaxSize(config.maxItems).GetsPerPromote(1)),
+		Cache:     NewCache(config.maxItems),
 		allowance: int32(config.allowance),
-		ttl:       config.ttl,
 	}
 }
 
 func (r *RateLimit) Track(key string) int32 {
-	tracker, _ := r.Fetch(key, r.ttl, func() (interface{}, error) {
-		return NewTracker(), nil
-	})
-	return tracker.Value().(*Tracker).Track(r.allowance)
+	tracker := r.Fetch(key)
+	return tracker.Track(r.allowance)
 }

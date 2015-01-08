@@ -3,7 +3,6 @@ package ratelimit
 import (
 	. "github.com/karlseguin/expect"
 	"testing"
-	"time"
 )
 
 type RateLimitTests struct{}
@@ -25,9 +24,7 @@ func (e *RateLimitTests) OkForExistingItemOverAllowance() {
 }
 
 func (e *RateLimitTests) FloodWhenPastThreshold() {
-	limiter := New(Configure().
-		Allowance(2).
-		TTL(time.Minute))
+	limiter := New(Configure().Allowance(2))
 	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
 	Expect(limiter.Track("test")).GreaterOrEqual.To(int32(0))
 	Expect(limiter.Track("test")).Less.Than(int32(0))
