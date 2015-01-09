@@ -47,3 +47,15 @@ func (_ CacheTests) PurgesWhenOverLimit() {
 	Expect(cache.Fetch("10").Track(4)).To.Equal(int32(2))
 	Expect(cache.Fetch("11").Track(4)).To.Equal(int32(2))
 }
+
+func (_ CacheTests) StopsPurgingWhenNothingLeftToPurge() {
+	cache := NewCache(10)
+	for i := 0; i < 4; i++ {
+		cache.Fetch(strconv.Itoa(i)).Track(5)
+	}
+	time.Sleep(time.Millisecond * 10) //let the gc run
+	Expect(cache.Fetch("0").Track(4)).To.Equal(int32(3))
+	Expect(cache.Fetch("1").Track(4)).To.Equal(int32(3))
+	Expect(cache.Fetch("2").Track(4)).To.Equal(int32(3))
+	Expect(cache.Fetch("3").Track(4)).To.Equal(int32(3))
+}

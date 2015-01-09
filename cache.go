@@ -1,7 +1,6 @@
 package ratelimit
 
 import (
-	"container/list"
 	"hash/fnv"
 	"sync"
 )
@@ -14,11 +13,12 @@ const (
 type CachedTracker struct {
 	key     string
 	tracker *Tracker
-	element *list.Element
+	prev    *CachedTracker
+	next    *CachedTracker
 }
 
 type Cache struct {
-	list        *list.List
+	list        *List
 	maxItems    int64
 	items       int64
 	purgeSize   int64
@@ -29,7 +29,7 @@ type Cache struct {
 func NewCache(maxItems int64) *Cache {
 	c := &Cache{
 		maxItems:    maxItems,
-		list:        list.New(),
+		list:        NewList(),
 		purgeSize:   maxItems / 20,
 		buckets:     make([]*bucket, BUCKETS),
 		promotables: make(chan *CachedTracker, 1024),
@@ -60,25 +60,26 @@ func (c *Cache) bucket(key string) *bucket {
 func (c *Cache) worker() {
 	for {
 		item := <-c.promotables
-		if item.element == nil { //new item
+		if item.prev == nil { //new item
 			c.items += 1
 			if c.items > c.maxItems {
 				c.gc()
 			}
-			item.element = c.list.PushFront(item)
-		} else {
-			c.list.MoveToFront(item.element)
 		}
+		c.list.PushToFront(item)
 	}
 }
 
 func (c *Cache) gc() {
+	item := c.list.tail.prev
 	for i := int64(0); i < c.purgeSize; i++ {
-		e := c.list.Back()
-		item := e.Value.(*CachedTracker)
+		if item == c.list.head {
+			break
+		}
 		c.bucket(item.key).remove(item.key)
-		c.list.Remove(e)
+		c.list.Remove(item)
 		c.items -= 1
+		item = item.prev
 	}
 }
 
