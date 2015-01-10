@@ -1,13 +1,8 @@
 package ratelimit
 
-import (
-	"time"
-)
-
 type RateLimit struct {
 	*Cache
 	allowance int32
-	ttl       time.Duration
 }
 
 func New(config *Configuration) *RateLimit {
