@@ -7,7 +7,7 @@ import (
 
 type Tracker struct {
 	Allowance int32
-	LastRead  int64
+	LastRead  uint32
 }
 
 func NewTracker() *Tracker {
@@ -15,8 +15,8 @@ func NewTracker() *Tracker {
 }
 
 func (t *Tracker) Track(allowedPerSecond int32) int32 {
-	now := time.Now().Unix()
-	earned := int32(now - atomic.SwapInt64(&t.LastRead, now))
+	now := uint32(time.Now().Unix())
+	earned := int32(now - atomic.SwapUint32(&t.LastRead, now))
 	if earned > allowedPerSecond {
 		earned = allowedPerSecond
 	}

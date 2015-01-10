@@ -48,7 +48,7 @@ When configuring the limiter:
 * `MaxAllowance(int)` - maximum number of requests per second allowed (default: 5)
 * `MaxItems(int)` - maximum number of values to track (default: 5000)
 
-It takes roughly 1.3MB to track 10 000 items. The limiter is thread-safe.
+It takes roughly 1.2MB to track 10 000 items. The limiter is thread-safe.
 
 ## Return Value
 

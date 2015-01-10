@@ -18,12 +18,12 @@ func (_ TrackerTests) OkWhenOverAllowance() {
 }
 
 func (_ TrackerTests) OkWhenOverThreshold() {
-	tracker := &Tracker{Allowance: 2, LastRead: time.Now().Unix()}
+	tracker := &Tracker{Allowance: 2, LastRead: uint32(time.Now().Unix())}
 	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
 }
 
 func (_ TrackerTests) FloodWhenBelowTreshold() {
-	tracker := &Tracker{Allowance: 2, LastRead: time.Now().Unix()}
+	tracker := &Tracker{Allowance: 2, LastRead: uint32(time.Now().Unix())}
 	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
 	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
 	Expect(tracker.Track(5)).Less.Than(int32(0))
@@ -31,7 +31,7 @@ func (_ TrackerTests) FloodWhenBelowTreshold() {
 }
 
 func (_ TrackerTests) OkAfterARestPeriod() {
-	tracker := &Tracker{Allowance: 1, LastRead: time.Now().Unix()}
+	tracker := &Tracker{Allowance: 1, LastRead: uint32(time.Now().Unix())}
 	Expect(tracker.Track(5)).GreaterOrEqual.To(int32(0))
 	Expect(tracker.Track(5)).Less.Than(int32(0))
 	Expect(tracker.Track(5)).Less.Than(int32(0))
